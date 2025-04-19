@@ -5,7 +5,7 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: false, unique: true })
   username: string;
 
   @Column({ type: 'text' })
@@ -17,6 +17,6 @@ export class User {
   @Column({ type: 'text', nullable: false })
   email: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 }

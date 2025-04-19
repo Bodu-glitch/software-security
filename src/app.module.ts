@@ -58,13 +58,13 @@ console.log(process.env.MAILDEV_INCOMING_USER);
           from: '"No Reply" <no-reply@localhost>',
         },
         // preview: true,
-        // template: {
-        //   dir: process.cwd() + '/template/',
-        //   adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
-        //   options: {
-        //     strict: true,
-        //   },
-        // },
+        template: {
+          dir: process.cwd() + '/src/mail/templates/',
+          adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
+          options: {
+            strict: true,
+          },
+        },
       }),
     }),
     AuthModule,
@@ -84,6 +84,18 @@ export class AppModule implements NestModule {
         },
         {
           path: 'auth/login',
+          method: RequestMethod.ALL,
+        },
+        {
+          path: 'auth/verify-email',
+          method: RequestMethod.ALL,
+        },
+        {
+          path: 'auth/forgot-password',
+          method: RequestMethod.ALL,
+        },
+        {
+          path: 'auth/reset-password',
           method: RequestMethod.ALL,
         },
       )
