@@ -72,7 +72,7 @@ export class AuthService {
     }
     const isMatch = await bcrypt.compare(createUserDto.password, user.password);
     if (!isMatch) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
     }
     const payload = {
       id: user.id,
@@ -84,7 +84,11 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
-        expiresIn: '3h',
+        expiresIn: process.env.JWT_EXPIRATION,
+      }),
+      refresh_token: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.SECRET_REFRESH_TOKEN_EXPIRATION,
       }),
     };
   }

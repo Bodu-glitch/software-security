@@ -38,7 +38,7 @@ export class BoardGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     // Get the token from the request headers
-    const token = request.headers['authorization'];
+    const token = request.cookies?.access_token;
 
     if (!token) {
       throw new UnauthorizedException('Token not found');

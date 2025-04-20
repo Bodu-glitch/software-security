@@ -1,6 +1,15 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -12,9 +21,25 @@ export class AuthController {
   }
 
   @Post('login')
-  login(@Body() createUserDto: CreateUserDto) {
+  async login(
+    @Body() createUserDto: CreateUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     console.log('login', createUserDto);
-    return this.authService.login(createUserDto);
+    const data = await this.authService.login(createUserDto);
+    response
+      .cookie('access_token', data.access_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+      })
+      .cookie('refresh_token', data.refresh_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+      });
+
+    response.status(HttpStatus.OK).send(data);
   }
 
   @Post('forgot-password')
@@ -38,5 +63,22 @@ export class AuthController {
       body.verificationToken,
       body.verificationCode,
     );
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) response: Response) {
+    response
+      .clearCookie('access_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+      })
+      .clearCookie('refresh_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+      });
+    return { message: 'Logged out successfully' };
   }
 }
