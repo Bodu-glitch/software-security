@@ -14,12 +14,14 @@ import {
   matchBoardsRoles,
 } from '../../decorators/boards_roles.decorator';
 import { BoardsRole } from '../../enums/boards_role';
+import { UserBoardService } from '../../domains/user_board/user_board.service';
 
 @Injectable()
 export class BoardGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
+    private userBoardService: UserBoardService,
   ) {}
 
   canActivate(

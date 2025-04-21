@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Board } from '../../board/entities/board.entity';
+import { UserBoard } from '../../user_board/entities/user_board.entity';
 
 @Entity()
 export class User {
@@ -19,4 +21,13 @@ export class User {
 
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
+
+  @OneToMany(() => Board, (board) => board.id, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
+  boards: Board[];
+
+  @OneToMany(() => UserBoard, (userBoard) => userBoard.user)
+  inBoards: UserBoard[];
 }

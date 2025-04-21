@@ -16,6 +16,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { AuthModule } from './domains/auth/auth.module';
+import { BoardModule } from './domains/board/board.module';
+import { UserBoardModule } from './domains/user_board/user_board.module';
 
 dotenv.config();
 
@@ -67,6 +69,8 @@ console.log(process.env.MAILDEV_INCOMING_USER);
         },
       }),
     }),
+    BoardModule,
+    UserBoardModule,
     AuthModule,
     UserModule,
   ],
