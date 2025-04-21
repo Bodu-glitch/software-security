@@ -4,6 +4,7 @@ import { UpdateUserBoardDto } from './dto/update-user_board.dto';
 import { UserBoard } from './entities/user_board.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BoardsRole } from '../../enums/boards_role';
 
 @Injectable()
 export class UserBoardService {
@@ -12,11 +13,7 @@ export class UserBoardService {
     private userBoardRepository: Repository<UserBoard>,
   ) {}
 
-  getUserBoards(userId: string) {
-    return this.userBoardRepository.find({
-      where: {
-        user_id: userId,
-      },
-    });
+  async getUserBoards(userId: string) {
+    return BoardsRole.TeamMember;
   }
 }

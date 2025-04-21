@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -21,12 +22,10 @@ export class BoardGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
-    private userBoardService: UserBoardService,
+    @Inject(UserBoardService) private userBoardService: UserBoardService,
   ) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const boardsRoles = this.reflector.get<string[]>(
       BoardsRoles,
       context.getHandler(),
@@ -52,7 +51,9 @@ export class BoardGuard implements CanActivate {
       });
       console.log(process.env.JWT_SECRET);
       //call API to get user boards roles
-      const userBoardsRoles = BoardsRole.Owner;
+      const userBoardsRoles = await this.userBoardService.getUserBoards(
+        user.id,
+      );
       return matchBoardsRoles(boardsRoles, userBoardsRoles);
     } catch (e) {
       switch (e.name) {
