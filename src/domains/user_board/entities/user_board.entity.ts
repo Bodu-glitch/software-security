@@ -6,11 +6,19 @@ import { BoardsRole } from '../../../enums/boards_role';
 
 @Entity()
 export class UserBoard {
-  @PrimaryColumn('uuid')
-  user_id: string;
+  @PrimaryColumn({
+    type: 'uuid',
+    name: 'user_id',
+    nullable: false,
+  })
+  userId: string;
 
-  @PrimaryColumn('uuid')
-  board_id: string;
+  @PrimaryColumn({
+    type: 'uuid',
+    name: 'board_id',
+    nullable: false,
+  })
+  boardId: string;
 
   @ManyToOne(() => User, (user) => user.inBoards)
   @JoinColumn({ name: 'user_id' })

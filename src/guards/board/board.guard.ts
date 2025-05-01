@@ -45,6 +45,10 @@ export class BoardGuard implements CanActivate {
       throw new UnauthorizedException('Token not found');
     }
 
+    if (!request.body.boardId) {
+      throw new BadRequestException('Board ID not found');
+    }
+
     try {
       const user = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
@@ -53,6 +57,7 @@ export class BoardGuard implements CanActivate {
       //call API to get user boards roles
       const userBoardsRoles = await this.userBoardService.getUserBoards(
         user.id,
+        request.body.boardId,
       );
       return matchBoardsRoles(boardsRoles, userBoardsRoles);
     } catch (e) {

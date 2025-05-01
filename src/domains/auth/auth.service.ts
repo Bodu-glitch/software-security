@@ -64,12 +64,19 @@ export class AuthService {
   }
 
   async login(createUserDto: CreateUserDto) {
+    console.log('login', createUserDto.username);
     const user = await this.userRepository.findOne({
       where: { username: createUserDto.username },
     });
+    console.log(user);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+
+    if (!createUserDto.password) {
+      throw new HttpException('Password is required', HttpStatus.BAD_REQUEST);
+    }
+
     const isMatch = await bcrypt.compare(createUserDto.password, user.password);
     if (!isMatch) {
       throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
