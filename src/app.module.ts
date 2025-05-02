@@ -18,6 +18,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { AuthModule } from './domains/auth/auth.module';
 import { BoardModule } from './domains/board/board.module';
 import { UserBoardModule } from './domains/user_board/user_board.module';
+import { CaslModule } from './modules/casl/casl.module';
 
 dotenv.config();
 
@@ -73,6 +74,7 @@ console.log(process.env.MAILDEV_INCOMING_USER);
     UserBoardModule,
     AuthModule,
     UserModule,
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [AppService],

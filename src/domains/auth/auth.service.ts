@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { response } from 'express';
+import { CaslAbilityFactory } from '../../modules/casl/casl-ability.factory';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
     private mailerService: MailerService,
+    private readonly caslService: CaslAbilityFactory,
   ) {}
 
   async signup(createUserDto: CreateUserDto) {
@@ -146,6 +148,8 @@ export class AuthService {
         throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
       }
 
+      console.log('payload', payload);
+
       if (payload.otp !== otp) {
         throw new HttpException(
           'Invalid verification code',
@@ -225,5 +229,27 @@ export class AuthService {
     //     expiresIn: '5h',
     //   },
     // );
+  }
+
+  async refresh(token: string) {
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      const newToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.JWT_EXPIRATION,
+      });
+      const newRefreshToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.SECRET_REFRESH_TOKEN_EXPIRATION,
+      });
+      return {
+        access_token: newToken,
+        refresh_token: newRefreshToken,
+      };
+    } catch (e) {
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
   }
 }

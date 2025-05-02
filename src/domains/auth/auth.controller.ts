@@ -2,14 +2,16 @@ import {
   Body,
   Controller,
   HttpCode,
+  HttpException,
   HttpStatus,
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -80,5 +82,30 @@ export class AuthController {
         sameSite: 'none',
       });
     return { message: 'Logged out successfully' };
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const token = request.cookies?.refresh_token;
+    if (!token) {
+      throw new HttpException('Token not found', HttpStatus.UNAUTHORIZED);
+    }
+    const data = await this.authService.refresh(token);
+    response
+      .cookie('access_token', data.access_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+      })
+      .cookie('refresh_token', data.refresh_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+      });
+    return data;
   }
 }
