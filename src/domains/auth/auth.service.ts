@@ -157,22 +157,16 @@ export class AuthService {
         );
       }
       payload.password = await bcrypt.hash(password, 10);
-      return await this.userRepository
-        .update(
-          {
-            username: payload.username,
-          },
-          {
-            password: payload.password,
-          },
-        )
-        .then((response) => {
-          return response;
-        })
-        .catch((reason) => {
-          throw new HttpException(reason, HttpStatus.BAD_REQUEST);
-        });
+      return await this.userRepository.update(
+        {
+          username: payload.username,
+        },
+        {
+          password: payload.password,
+        },
+      );
     } catch (error) {
+      console.log('error', error);
       if (error instanceof HttpException) {
         throw error;
       }
@@ -233,9 +227,12 @@ export class AuthService {
 
   async refresh(token: string) {
     try {
+      console.log('token', token);
       const payload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });
+      delete payload.iat;
+      delete payload.exp;
       const newToken = this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
         expiresIn: process.env.JWT_EXPIRATION,
@@ -249,6 +246,7 @@ export class AuthService {
         refresh_token: newRefreshToken,
       };
     } catch (e) {
+      console.log('error', e);
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
   }

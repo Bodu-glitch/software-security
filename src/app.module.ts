@@ -104,6 +104,10 @@ export class AppModule implements NestModule {
           path: 'auth/reset-password',
           method: RequestMethod.ALL,
         },
+        {
+          path: 'auth/refresh',
+          method: RequestMethod.POST,
+        },
       )
       .forRoutes('*');
   }

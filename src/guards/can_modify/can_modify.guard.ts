@@ -13,12 +13,15 @@ import {
 } from '../../modules/casl/casl-ability.factory';
 import { PolicyHandler } from '../../models/policy.model';
 import { CHECK_POLICIES_KEY } from '../../decorators/check_policy.decorator';
+import { User } from '../../domains/user/entities/user.entity';
+import { UserService } from '../../domains/user/user.service';
 
 @Injectable()
-export class PolicyGuard implements CanActivate {
+export class CanModifyGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private caslAbilityFactory: CaslAbilityFactory,
+    private userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -33,12 +36,19 @@ export class PolicyGuard implements CanActivate {
       if (!user) {
         throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
       }
-      console.log('PolicyGuard user', user);
 
       const ability = this.caslAbilityFactory.createForUser(user);
 
+      const modifyUserId = context.switchToHttp().getRequest().body.userId;
+
+      if (!modifyUserId) {
+        throw new HttpException('User ID not provided', HttpStatus.BAD_REQUEST);
+      }
+
+      const modifyUser = await this.userService.getUserById(modifyUserId);
+
       return policyHandlers.every((handler) =>
-        this.execPolicyHandler(handler, ability),
+        this.execPolicyHandler(handler, ability, modifyUser),
       );
     } catch (error) {
       throw new HttpException(
@@ -48,9 +58,13 @@ export class PolicyGuard implements CanActivate {
     }
   }
 
-  private execPolicyHandler(handler: PolicyHandler, ability: AppAbility) {
+  private execPolicyHandler(
+    handler: PolicyHandler,
+    ability: AppAbility,
+    user: User,
+  ) {
     if (typeof handler === 'function') {
-      return handler(ability);
+      return handler(ability, user);
     }
     return handler.handle(ability);
   }

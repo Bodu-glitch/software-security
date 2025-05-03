@@ -9,8 +9,12 @@ import { Board } from '../../domains/board/entities/board.entity';
 import { User } from '../../domains/user/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { Action } from '../../enums/action.enum';
+import { UserBoard } from '../../domains/user_board/entities/user_board.entity';
 
-type Subjects = InferSubjects<typeof Board | typeof User> | 'all';
+type Subjects =
+  | InferSubjects<typeof Board | typeof User>
+  | typeof UserBoard
+  | 'all';
 
 export type AppAbility = Ability<[Action, Subjects]>;
 

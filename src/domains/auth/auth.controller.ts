@@ -12,6 +12,12 @@ import {
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { Response, Request } from 'express';
+import { CheckPolicies } from '../../decorators/check_policy.decorator';
+import { User } from '../user/entities/user.entity';
+import { Ability } from '@casl/ability';
+import { AppAbility } from '../../modules/casl/casl-ability.factory';
+import { Action } from '../../enums/action.enum';
+import { PolicyGuard } from '../../guards/policy/policy.guard';
 
 @Controller('auth')
 export class AuthController {
