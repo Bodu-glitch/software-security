@@ -19,6 +19,7 @@ import { AuthModule } from './domains/auth/auth.module';
 import { BoardModule } from './domains/board/board.module';
 import { UserBoardModule } from './domains/user_board/user_board.module';
 import { CaslModule } from './modules/casl/casl.module';
+import { BoardCaslModule } from './modules/board-casl/board-casl.module';
 
 dotenv.config();
 
@@ -75,6 +76,7 @@ console.log(process.env.MAILDEV_INCOMING_USER);
     AuthModule,
     UserModule,
     CaslModule,
+    BoardCaslModule,
   ],
   controllers: [AppController],
   providers: [AppService],

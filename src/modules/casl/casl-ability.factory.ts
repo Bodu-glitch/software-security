@@ -10,6 +10,7 @@ import { User } from '../../domains/user/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { Action } from '../../enums/action.enum';
 import { UserBoard } from '../../domains/user_board/entities/user_board.entity';
+import { BoardsRole } from '../../enums/boards_role';
 
 type Subjects =
   | InferSubjects<typeof Board | typeof User>
