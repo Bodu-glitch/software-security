@@ -18,13 +18,14 @@ import { Ability } from '@casl/ability';
 import { AppAbility } from '../../modules/casl/casl-ability.factory';
 import { Action } from '../../enums/action.enum';
 import { PolicyGuard } from '../../guards/policy/policy.guard';
+import { SignupDto } from './dto/signup.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  signup(@Body() createUserDto: CreateUserDto) {
+  signup(@Body() createUserDto: SignupDto) {
     return this.authService.signup(createUserDto);
   }
 

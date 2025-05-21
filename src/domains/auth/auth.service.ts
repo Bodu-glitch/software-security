@@ -62,7 +62,9 @@ export class AuthService {
         console.log('Email sent failed', reason);
         throw new HttpException(reason, HttpStatus.BAD_REQUEST);
       });
-    return token;
+    return {
+      verify_token: token,
+    };
   }
 
   async login(createUserDto: CreateUserDto) {
