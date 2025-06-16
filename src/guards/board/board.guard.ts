@@ -45,7 +45,7 @@ export class BoardGuard implements CanActivate {
       throw new UnauthorizedException('Token not found');
     }
 
-    if (!request.body.boardId) {
+    if (!request.body.boardId && !request.params.boardId) {
       throw new BadRequestException('Board ID not found');
     }
 
@@ -55,10 +55,14 @@ export class BoardGuard implements CanActivate {
       });
       console.log(process.env.JWT_SECRET);
       //call API to get user boards roles
+      const boardId = request.body.boardId || request.params.boardId;
+
       const userBoardsRoles = await this.userBoardService.getUserBoards(
         user.id,
-        request.body.boardId,
+        boardId,
       );
+
+      console.log('userBoardsRoles', userBoardsRoles);
       return matchBoardsRoles(boardsRoles, userBoardsRoles);
     } catch (e) {
       switch (e.name) {

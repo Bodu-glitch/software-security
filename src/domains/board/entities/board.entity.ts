@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { UserBoard } from '../../user_board/entities/user_board.entity';
+import { Columns } from '../../columns/entities/column.entity';
 
 @Entity()
 export class Board {
@@ -28,4 +29,10 @@ export class Board {
 
   @OneToMany(() => UserBoard, (userBoard) => userBoard.board)
   usersInBoard: UserBoard[];
+
+  @OneToMany(() => Columns, (column) => column.board, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  columns: Columns[];
 }

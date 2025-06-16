@@ -27,6 +27,8 @@ export class UserBoardService {
         owner: { id: userId },
       },
     });
+
+    console.log('isOwner', isOwner);
     if (isOwner) {
       return BoardsRole.Owner;
     }

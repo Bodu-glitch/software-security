@@ -19,6 +19,9 @@ import { AppAbility } from '../../modules/casl/casl-ability.factory';
 import { Action } from '../../enums/action.enum';
 import { PolicyGuard } from '../../guards/policy/policy.guard';
 import { SignupDto } from './dto/signup.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -52,21 +55,21 @@ export class AuthController {
   }
 
   @Post('forgot-password')
-  forgotPassword(@Body() body: { userName: string }) {
+  forgotPassword(@Body() body: ForgotPasswordDto) {
     console.log('forgot-password', body);
     return this.authService.forgotPassword(body.userName);
   }
 
   @Post('reset-password')
   resetPassword(
-    @Body() body: { password: string; token: string; otp: string },
+    @Body() body: ResetPasswordDto,
   ) {
     return this.authService.resetPassword(body.token, body.otp, body.password);
   }
 
   @Post('verify-email')
   verifyEmail(
-    @Body() body: { verificationToken: string; verificationCode: string },
+    @Body() body: VerifyEmailDto,
   ) {
     return this.authService.verifyEmail(
       body.verificationToken,

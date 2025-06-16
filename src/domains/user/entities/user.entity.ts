@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Board } from '../../board/entities/board.entity';
 import { UserBoard } from '../../user_board/entities/user_board.entity';
+import { Card } from '../../card/entities/card.entity';
 
 @Entity()
 export class User {
@@ -30,4 +31,9 @@ export class User {
 
   @OneToMany(() => UserBoard, (userBoard) => userBoard.user)
   inBoards: UserBoard[];
+
+  @ManyToMany(() => Card, (card) => card.members, {
+    onDelete: 'CASCADE',
+  })
+  cards: Card[];
 }
